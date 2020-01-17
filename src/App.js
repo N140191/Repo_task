@@ -8,16 +8,16 @@ import RightDiv from './RightDiv';
 import Leftdata from './Left_data';
 import Navigation_menu from './Navigation_menu';
 function App() {
-  const [data, setData] = useState({});
+  const [Repository_data, setRepo_Data] = useState({});
 
     useEffect(()=>{
         axios("https://api.github.com/users/supreetsingh247")
         .then((response)=>{
-            //console.log(response.data);
-            setData(response.data);
+           
+            setRepo_Data(response.data);
         })
         .catch((err)=>{
-            setData({});
+            setRepo_Data({});
         })
     }, []);
   return (
@@ -28,7 +28,7 @@ function App() {
         </div>
       <div className="main-div">
         <Leftdata/>
-        <RightDiv info={data}/>
+        <RightDiv info={Repository_data}/>
       </div>
     </div>
   );

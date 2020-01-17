@@ -111,7 +111,7 @@
                         display: inline-block;
                         align-self: center;
                         margin-right: 10px;
-                        #span_id
+                        #span_id1
                         {
                             display: inline-block;
                             padding: 2px 5px;
@@ -141,7 +141,7 @@
                         align-self: center;
                         margin-right: 10px;
                         border-bottom: 2px solid  #00000000;
-                        #span_id
+                        #span_id1
                         {
                             display: inline-block;
                             padding: 2px 5px;
@@ -502,7 +502,7 @@ color: #24292e;
     padding-bottom: 30px;
     padding-right: 30px;
   }
-  #clear_btn{
+  #clear_button{
     max-width: 100%;
     position: relative;
     margin-bottom: 8px;
@@ -527,7 +527,7 @@ color: #24292e;
     text-align: center;
     float:right;
   }
-  .clear_btn :hover
+  .clear_button :hover
   {
       color:blue;
   }

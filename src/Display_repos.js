@@ -3,7 +3,7 @@ import './git_repo.scss';
 import Get_date from './Get_date';
 
 const Display_repos=(props)=>{
-   
+        console.log("props",props)
         return(
             <div id="repos_display_div" style={{marginRight:"3%"}}>
                 <div className="results_div_item">

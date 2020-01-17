@@ -4,10 +4,13 @@ import axios from 'axios';
 import Display_repos from './Display_repos';
 import Language_filter from './Type_Language';
 const RightDiv = (props) => {
+    
     const [repoData, setRepoData] = useState([]);
+    const [filterdata,setfilterdata] = useState([])
+
     const [searchKeyword, setSearchKeyword] = useState("");
-    const [language, setLanguage] = useState("");
-    const [type, setType] = useState("");
+    const [language, setLanguage] = useState("All");
+    const [show, setshow] = useState(true);
     const [showdiv1, setShowdiv1] = useState(false)
     const [showdiv2, setShowdiv2] = useState(false)
 
@@ -15,55 +18,56 @@ const RightDiv = (props) => {
         axios("https://api.github.com/users/supreetsingh247/repos")
             .then(res => {
                 setRepoData(res.data);
-                console.log(res.data);
             }).catch(error => {
                 alert(error);
             })
-    }, []);
+            Result_Data()
+    }, [searchKeyword,language]);
 
 
     // to filter the data from the repoData based on the search_keyword and language selection
-    const getFinalData = (keyword, lang) => {
-        var originalData = repoData.slice(0);   // taking copy
-        var finalData = [];
-        var regKeyword = new RegExp(keyword, "i");
-        var regLang = new RegExp(lang, "i");
-        if (keyword == "" && lang == "") {
-            return originalData;
-        } else if (keyword != "" && lang != "") {
-            //looping through array
-            originalData.forEach(function (item, index) {
-                if ((item.name.search(regKeyword) != -1) && (item.language && item.language.search(regLang) != -1)) {
-                    finalData.push(item);
+    const Result_Data = () => {
+        if(searchKeyword !== '' && language !== 'All'){
+            setfilterdata(repoData.filter((data)=>{
+                return( 
+                        ((data.name && data.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) !== -1) ||
+                        (data.description && data.description.toLowerCase().indexOf(searchKeyword.toLowerCase()) !== -1))
+                        &&
+                        (data.language && data.language.toLowerCase().indexOf(language.toLowerCase()) !== -1)
+                    )
                 }
-            })
-        } else if (keyword != "") {
-            //looping through array
-            originalData.forEach(function (item, index) {
-                if (item.name.search(regKeyword) != -1) {
-                    finalData.push(item);
+            ))
+            setshow(false)
+        }else if(searchKeyword === '' && language !== 'All'){
+            setfilterdata(repoData.filter((data)=>{
+                return( 
+                        (data.language && data.language.toLowerCase().indexOf(language.toLowerCase()) !== -1)
+                    )
                 }
-            });
-        } else if (language != "") {
-            //looping through array
-            originalData.forEach(function (item, index) {
-                if (item.language && item.language.search(regLang) != -1) {
-                    finalData.push(item);
+            ))
+            setshow(false)
+        }else if(searchKeyword !== '' && language === "All"){
+            setfilterdata(repoData.filter((data)=>{
+                return( 
+                        ((data.name && data.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) !== -1) ||
+                        (data.description && data.description.toLowerCase().indexOf(searchKeyword.toLowerCase()) !== -1))
+                    )
                 }
-            });
+            ))
+            setshow(false)
+        }else{
+            setshow(true)
         }
-        return finalData;
     }
 
     // function to handle clear btn click event
-    // this will reset searchKeyword and language state elements
-    const handleClear = () => {
-        console.log("celared");
+    // this will reset searchKeyword and set language  to "All"
+    const Clear_button = () => {
         setSearchKeyword("");
-        setLanguage("");
+        setLanguage("All");
+        setshow(true)
     }
-
-    const finalData = getFinalData(searchKeyword, language);
+    console.log("repos",repoData);
 
     return (
         <div className="right-one">
@@ -75,31 +79,31 @@ const RightDiv = (props) => {
                     </a>
                     <a className="options-repos">
                         Repositories
-                        <span id="span_id" >
+                        <span id="span_id1" >
                             {props.info.public_repos}
                         </span>
                     </a>
                     <a className="options-item">
                         Projects
-                        <span id="span_id"  >
+                        <span id="span_id1"  >
                             {props.info.public_gists}
                         </span>
                     </a>
                     <a className="options-item">
                         Stars
-                        <span id="span_id"  >
+                        <span id="span_id1"  >
                             {10}
                         </span>
                     </a>
                     <a className="options-item">
                         Followers
-                        <span id="span_id"  >
+                        <span id="span_id1"  >
                             {props.info.followers}
                         </span>
                     </a>
                     <a className="options-item">
                         Following
-                        <span id="span_id"  >
+                        <span id="span_id1"  >
                             {props.info.following}
                         </span>
                     </a>
@@ -136,27 +140,27 @@ const RightDiv = (props) => {
 
                                     <div className="menu_list">
                                         <label className="list_item" aria-checked="true" tabindex="0">
-                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;All"; document.getElementById("filter_type").removeAttribute("open") }} name="type" id="type_" value="" hidden="hidden" data-autosubmit="true" checked="checked" />
+                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;All"; document.getElementById("filter_type") }} name="type" id="type_" value="" hidden="hidden" data-autosubmit="true" checked="checked" />
 
                                             <span className="text-normal" data-menu-button-text="">All</span>
                                         </label>
                                         <label className="list_item"  >
-                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type").removeAttribute("open") }} name="type" id="type_source" value="source" hidden="hidden" data-autosubmit="true" />
+                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type") }} name="type" id="type_source" value="source" hidden="hidden" data-autosubmit="true" />
 
                                             <span className="text-normal" data-menu-button-text="">Sources</span>
                                         </label>
                                         <label className="list_item"  >
-                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type").removeAttribute("open") }} name="type" id="type_fork" value="fork" hidden="hidden" data-autosubmit="true" />
+                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type") }} name="type" id="type_fork" value="fork" hidden="hidden" data-autosubmit="true" />
 
                                             <span className="text-normal" data-menu-button-text="">Forks</span>
                                         </label>
                                         <label className="list_item"  >
-                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type").removeAttribute("open") }} name="type" id="type_archived" value="archived" hidden="hidden" data-autosubmit="true" />
+                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type")}} name="type" id="type_archived" value="archived" hidden="hidden" data-autosubmit="true" />
 
                                             <span className="text-normal" data-menu-button-text="">Archived</span>
                                         </label>
                                         <label className="list_item"  >
-                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type").removeAttribute("open") }} name="type" id="type_mirror" value="mirror" hidden="hidden" data-autosubmit="true" />
+                                            <input type="radio" onChange={(e) => { document.getElementById("type_id").innerHTML = "&nbsp;&nbsp;" + e.target.value; document.getElementById("filter_type") }} name="type" id="type_mirror" value="mirror" hidden="hidden" data-autosubmit="true" />
                                             <span className="text-normal" data-menu-button-text="">Mirrors</span>
                                         </label>
                                     </div>
@@ -168,7 +172,7 @@ const RightDiv = (props) => {
                         </details>
                     </div>
 
-                    {/* Language filter */}
+                    {/* For Language filter */}
                     <div>
                         <details id="filter_language">
                             <summary className="type_button" aria-haspopup="menu" role="button" onClick={
@@ -231,17 +235,25 @@ const RightDiv = (props) => {
 
             <div className="repos_display_div">
                 {
-                    (searchKeyword || language) ?
-                        ((finalData.length) ?
-                            (<div className="clear_div">{finalData.length} results for repositories {searchKeyword ? <span>matching <b>{searchKeyword}</b></span> : null} {language ? <span>written in <b>{language}</b></span> : null}<a id="clear_btn" onClick={() => handleClear()}><svg className="svg_clear" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z"></path></svg> &nbsp;&nbsp;&nbsp;     Clear</a></div>)
-                            : null)
-                        : null
+                   !show &&
+                    <div className="clear_div">{filterdata.length} 
+                    results for repositories {searchKeyword ? <span>matching <b>{searchKeyword}</b></span> : null}
+                     {language ? <span>written in <b>{language}</b></span> : null}
+                        <a id="clear_button" onClick={Clear_button}>
+                            <svg className="svg_clear" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fillRule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z"></path></svg>
+                             &nbsp;&nbsp;&nbsp;     Clear</a>
+                    </div>
+
                 }
                 {
-                    finalData.length ?
-                        (finalData.map((item, id) =>
-                            <Display_repos key={id} repos_details={item} />))
-                        : <Display_repos repos_details={{}} />
+                    show && 
+                        repoData.map((item, id) =>
+                            <Display_repos key={id} repos_details={item} />)
+                
+                }
+                {
+                     filterdata.map((item, id) =>
+                        <Display_repos key={id} repos_details={item} />)   
                 }
             </div>
         </div>

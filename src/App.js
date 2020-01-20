@@ -1,20 +1,20 @@
 import React,{useState,useEffect} from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import './git_repo.scss';
 import axios from 'axios';
-import LeftDiv from './LeftDiv';
+// import LeftDiv from './LeftDiv';
 import RightDiv from './RightDiv';
 import Leftdata from './Left_data';
 import Navigation_menu from './Navigation_menu';
-function App() {
+const App=()=> {
   const [Repository_data, setRepo_Data] = useState({});
 
     useEffect(()=>{
         axios("https://api.github.com/users/supreetsingh247")
-        .then((response)=>{
+        .then((res)=>{
            
-            setRepo_Data(response.data);
+            setRepo_Data(res.data);
         })
         .catch((err)=>{
             setRepo_Data({});

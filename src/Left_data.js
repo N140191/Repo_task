@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import React, {Component } from 'react';
+// import ReactDOM from 'react-dom';
 import axios from 'axios';
 import LeftDiv from './LeftDiv';
 import './git_repo.scss';
